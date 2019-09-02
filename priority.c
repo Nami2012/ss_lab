@@ -6,7 +6,7 @@ struct process
 { int pid;
   int burst;
   int waiting;
-  int arrival;
+  int priority;
   int turnaround;}P[15];
 
 
@@ -17,15 +17,13 @@ void swap(struct process *p1, struct process *p2)
     *p2 = tmp;
 }
 
-void sort_by_arrival(int n)
+void priority_sort(int n)
 {
     for(int i=0;i<n-1;i++)
         for (int j=0;j<n-i-1;j++)
-            if(P[j].arrival > P[j+1].arrival)
-                swap(&P[j], &P[j+1]);
-}
+            {if(P[j].priority > P[j+1].priority)
+                swap(&P[j], &P[j+1]);}}
 
-  
 	          
 void waiting_time( int n)
 {	P[0].waiting = 0;
@@ -43,11 +41,11 @@ void waiting_time( int n)
     		total_turnaround += P[i].turnaround;}
     		avg_wait = total_wait/n;
     		avg_turnaround = total_turnaround/n;
-    printf("Process-id \t arrival \t Burst-time \t waiting-time \t Turnaround time \n");
+    printf("Process-id \t priority \t Burst-time \t waiting-time \t Turnaround time \n");
 	for(int i =0;i<n;i++)
 	{ 
 		printf(" %d \t \t", P[i].pid);
-		printf(" %d \t \t",P[i].arrival);		
+		printf(" %d \t \t",P[i].priority);		
 		printf(" %d \t \t",P[i].burst);
 		printf(" %d \t \t",P[i].waiting);
 		printf(" %d \t \t",P[i].turnaround);		
@@ -67,9 +65,6 @@ void main()
 	{
 		P[i].pid = rand()%10 + 1;
 		P[i].burst = rand()%10 + 1;
-		P[i].arrival = rand()%10 +1;}
-	sort_by_arrival(n);
-	
+		P[i].priority = rand()%10 +1;}
+	priority_sort(n);
 	waiting_time(n);}
-
-	
