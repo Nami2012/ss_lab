@@ -64,10 +64,10 @@ void display(int n){
     for(int i=0;i<res;i++){
     printf(" %d ",available[i]);}
 
-    printf("\nPno process-id  allocation  need ");
+    printf("\nprocess-id  allocation  need ");
     
     for(int i=0;i<n;i++){
-    	printf("\n %d   %d",i,P[i].pid);
+    	printf("\n%d",P[i].pid);
     	
     	printf("\t \t");
     	for(int j=0;j<res;j++){
@@ -79,7 +79,8 @@ void display(int n){
 
 void resource_request(int i,int n){
 	if (req_lt_need(i,n)){
-		if(req_lt_available(i,n)){./fcfs.c
+		if(req_lt_available(i,n)){
+		//fcfs.c
 		for(int j=0;j<res;j++)
 			{available[j] -= P[i].req[j];
 			 P[i].allocation[j] += P[i].req[j];
@@ -115,7 +116,7 @@ void main(){
 		 available[i] = rand()%10+1;
 		 work[i] = available[i];}
 	for(int i =0;i<n;i++){
-		P[i].pid = rand()%10 + 1;
+		P[i].pid = rand()%250 + 1;
 		for(int j=0;j<res;j++)
 		{P[i].allocation[j]= rand()%max[j] + 1;}
 		P[i].finish = 0;}
@@ -129,10 +130,10 @@ void main(){
     	int flag =0;
     	for(int i=0;i<n;i++)
       		{ if((P[i].finish == 0) && (need_lt_work(i,n)))
-         	{ 	printf("\n Process %d ;",i);
+         	{ 	printf("\n Process %d ;",P[i].pid);
          		work_allocation(i,n);
            		P[i].finish = 1;
-           		safe_seq[j] = i;
+           		safe_seq[j] = P[i].pid;
            		j++;
            		flag = 1;}}
       	if(flag==0) break;}
@@ -146,7 +147,7 @@ void main(){
         	printf("P%d ",safe_seq[i]);
         	printf("> \n");
        	 	int i = rand()%res;
-        	printf("\n resource request pid:%d request value:",i);
+        	printf("\n resource request pid:%d request value:",P[i].pid);
         	for(int j=0;j<res;j++){
         	P[i].req[j]=rand()%(P[i].need[j]+1) +1;
         	printf(" %d", P[i].req[j]);}
