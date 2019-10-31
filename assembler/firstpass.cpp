@@ -4,6 +4,7 @@
 #include<vector>
 #include<algorithm>
 #include<map> 
+#include<bits/stdc++.h>
 using namespace std;
 void int_to_hex(int n)
     {
@@ -31,16 +32,26 @@ void int_to_hex(int n)
     }
 
 
-void verify_opcode(vector<char> opcode)
+int verify_opcode(vector<char> opcode)
     {
-        FILE *opcode_ptr;
-        
+       fstream file;
+       string word;
+       string op(opcode.begin(),opcode.end());
+       file.open("opcode.txt");
+       while(file>>word)
+        {  
+            if(word.compare(op)==0)
+               return 1;
+
+        }
+       return -1;
     }
+        
+    
 int main()
 { 
     int LOCCTR=0000;
 	FILE *fptr;
-    ofstream fout;
     vector<char> opcode,LABEL;
 	fptr = fopen("input.txt", "r"); 
 	char line[50];
@@ -58,13 +69,13 @@ int main()
 	
         while(line[i]!=' ' && line[i]!='\n')
            { opcode.push_back(line[i++]);
-             verify_opcode(opcode);
            }
         while(line[i]!='\n')
               LABEL.push_back(line[++i]);      
         cout<<endl;
-        for(int i=0;i<LABEL.size();i++)
-            cout<<LABEL[i];
+        for(int i=0;i<opcode.size();i++)
+            cout<<opcode[i];
+        cout<<verify_opcode(opcode);
         //cout<<LABEL; 		
         }  
     	fclose(fptr);
