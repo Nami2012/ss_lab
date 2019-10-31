@@ -38,16 +38,15 @@ void remove(struct tree *root,char const *param)
 	}
 void display(struct tree *root)
 	{	cout<<root->DirectoryName<<endl;
-		cout<<root->child.size();
-		//for(int i=0;i<(root->child).size();i++)
-			//{  cout<<root->child[i]->DirectoryName<<"\t";
-			   //cout<< root->child[i]->Filename <<"\t";}
+
+		for(int i=0;i<(root->child).size();i++)
+			{  cout<<root->child[i]->DirectoryName<<"\t";
+			   cout<< root->child[i]->Filename <<"\t";}
 		cout<<endl;
 		return;
 	}
 int DirectoryExists(struct tree *root,char const *param)
 	{    int pos=-1;
-             cout<<"Hey";
 		for(int i=0;i<(root->child).size();i++)
 			{
 				if(!strcmp(root->child[i]->DirectoryName,param))
@@ -62,6 +61,7 @@ int main()
 {	tree *root = newDirectoryNode("ROOT");
 	int i;
 	tree *cur_root=root;
+	root->parent = NULL;
         cout<<"user@user-260-p022il:$";
 	char command[40];
 	char cmd[20],param[20];
@@ -75,33 +75,35 @@ int main()
 		else
 	    		{	cin>>param;	
 				
-				if(!(strcmp(cmd,"gedit")) ||(!(strcmp(cmd,"touch"))))
+				if(!strcmp(cmd,"touch"))
 					(cur_root->child).push_back(newFileNode(param));
-				if(!strcmp(cmd,"mkdir"))
+				else if(!strcmp(cmd,"mkdir"))
 					(cur_root->child).push_back(newDirectoryNode(param,cur_root));
 				else if(!strcmp(cmd,"rm"))
 					remove(cur_root,param);
 				else if(!strcmp(cmd,"cd"))
-					{
-					if(i=DirectoryExists(cur_root,param) >=0)
+					{ i=DirectoryExists(cur_root,param);
+					if(i>=0)
 						{ 
-						  strcat(meh,param);
-						 
 						  flag=1;
 						  cur_root = cur_root->child[i];
 						}
 					else if (!strcmp(param,"../"))
-						{ //remove meh
+						{ 
 						  flag=0;
 						  cur_root=cur_root->parent;
+
 						}	
-					
+					else
+						cout<<"\n bash:"<<cmd<<param<<":No such file or directory";
+
 					 }   
 
 				else
 					cout<<"Command Not found";
 	    		}
-	cout<<meh;	
+	cout<<meh<<cur_root->DirectoryName;
+						  	
 	cin>>cmd;
 	}
 	exit(0);
