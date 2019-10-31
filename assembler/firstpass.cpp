@@ -10,7 +10,7 @@ void int_to_hex(int n)
     {
         
         vector<char> hex_value;
-        map<int, int> SYMTAB; 
+        
         while(n!=0)
         {   int temp = 0;
             temp = n%16;
@@ -47,9 +47,17 @@ int verify_opcode(vector<char> opcode)
        return -1;
     }
         
-    
+int verify_SYMTAB(vector<char> LABEL,map<int, int> SYMTAB)
+    {
+        if(SYMTAB.find(LABEL)!=SYMTAB.end())
+            return 1;
+        else
+        {
+        }
+        
+    }
 int main()
-{ 
+{   map<vector<char>, int> SYMTAB; 
     int LOCCTR=0000;
 	FILE *fptr;
     vector<char> opcode,LABEL;
@@ -70,12 +78,14 @@ int main()
         while(line[i]!=' ' && line[i]!='\n')
            { opcode.push_back(line[i++]);
            }
-        while(line[i]!='\n')
-              LABEL.push_back(line[++i]);      
-        cout<<endl;
+        if(verify_opcode(opcode))
+            {while(line[i]!='\n')
+                LABEL.push_back(line[++i]);
+                //verify_SYMTAB(LABEL,SYMTAB);
+                }
         for(int i=0;i<opcode.size();i++)
             cout<<opcode[i];
-        cout<<verify_opcode(opcode);
+        
         //cout<<LABEL; 		
         }  
     	fclose(fptr);
