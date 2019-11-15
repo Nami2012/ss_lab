@@ -42,6 +42,10 @@ int verify_opcode(string opcode)
 				return 3;
         if(opcode.compare("RESW")==0)
 				return 4;
+	   if(opcode.compare("RESB")==0)
+				return 5;
+	   if(opcode.compare("BYTE")==0)
+				return 6;
        return -1;
     }
     
@@ -52,7 +56,15 @@ int update(int mneumonic,int &LOCCTR,string operand)
 		if (mneumonic ==3)
 			LOCCTR +=3;
 	    if (mneumonic == 4)
-			LOCCTR += 3*stoi(operand);}
+			LOCCTR += 3*stoi(operand);
+		 if (mneumonic == 5)
+			LOCCTR += stoi(operand);
+		if (mneumonic == 6)
+			{ if (operand[0] == 'X') 
+					LOCCTR++;
+			  else
+			  	LOCCTR += operand.size()-3;
+			};}
 
 int main()
 {   map<string,string > SYMTAB; 
