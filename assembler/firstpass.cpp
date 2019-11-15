@@ -6,8 +6,8 @@
 #include<map> 
 #include<bits/stdc++.h>
 using namespace std;
-vector<char> int_to_hex(int n)
-    {   vector<char> hex_value;
+string int_to_hex(int n)
+    {   string hex_value;
         if(n==0) {hex_value.push_back('0');return hex_value;}
         while(n!=0)
         {   
@@ -40,18 +40,22 @@ int verify_opcode(string opcode)
        			return 2;
         if(opcode.compare("WORD")==0)
 				return 3;
+        if(opcode.compare("RESW")==0)
+				return 4;
        return -1;
     }
     
-int update(int mneumonic,int &LOCCTR)
+int update(int mneumonic,int &LOCCTR,string operand)
 	{
 		if(mneumonic == 1)
 			LOCCTR += 3;
 		if (mneumonic ==3)
-			LOCCTR +=3;}
+			LOCCTR +=3;
+	    if (mneumonic == 4)
+			LOCCTR += 3*stoi(operand);}
 
 int main()
-{   map<string,vector<char> > SYMTAB; 
+{   map<string,string > SYMTAB; 
     int LOCCTR=0000;
 	FILE *fptr;
 	ofstream fout,fim;
@@ -78,28 +82,24 @@ int main()
            { operand.push_back(line[i++]);
            }
        mneumonic = verify_opcode(opcode);
-       vector<char> hexLOCCTR = int_to_hex(LOCCTR);
+       string hexLOCCTR = int_to_hex(LOCCTR);
       
        if(mneumonic!=-1)
-       		update(mneumonic,LOCCTR);
+       		update(mneumonic,LOCCTR,operand);
        if(LABEL.size() != 0)
        		SYMTAB.insert({LABEL,hexLOCCTR});
    	   if(LABEL.size()==0)
-   	   fim<<LOCCTR<<" "<<"-"<<" "<<opcode<<" "<<operand;
+   	   fim<<hexLOCCTR<<" "<<"-"<<" "<<opcode<<" "<<operand;
    	   else
-   	   fim<<LOCCTR<<" "<<LABEL<<" "<<opcode<<" "<<operand;
+   	   fim<<hexLOCCTR<<" "<<LABEL<<" "<<opcode<<" "<<operand;
    	   fim<<endl;
         }
        fout.open("symtab.txt"); 
 	 
-       for(map<string, vector<char> >::iterator i=SYMTAB.begin(); i!=SYMTAB.end(); i++)
+       for(map<string, string >::iterator i=SYMTAB.begin(); i!=SYMTAB.end(); i++)
        {
-        fout<<i->first<<" ";
-        for(int j=0;j<i->second.size();j++)
-        { fout<<i->second[j];}
-        fout<<endl;
-        }  
-    	fclose(fptr);
+        fout<<i->first<<" "<<i->second;}
+        fclose(fptr);
     	fout.close();
         return 0;
 
