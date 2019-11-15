@@ -1,0 +1,4 @@
+COPY 0
+FOUR F
+ONE C
+THREE 9

@@ -6,88 +6,101 @@
 #include<map> 
 #include<bits/stdc++.h>
 using namespace std;
-void int_to_hex(int n)
-    {
-        
-        vector<char> hex_value;
-        
+vector<char> int_to_hex(int n)
+    {   vector<char> hex_value;
+        if(n==0) {hex_value.push_back('0');return hex_value;}
         while(n!=0)
-        {   int temp = 0;
+        {   
+            int temp = 0;
             temp = n%16;
             if(temp<10)
             {
-                hex_value.push_back((char)temp+48);
-                cout<<(char)temp+48<<endl;
+                hex_value.push_back((char)(temp+48)); 
             }
             else
             {
-                hex_value.push_back((char)temp+55);
-                cout<<(char)temp+55<<endl;
+                hex_value.push_back((char)(temp+55));
             }
             n=n/16;
         }
-        for(int j=hex_value.size()-1;j>=0;j--)
-            cout<<hex_value[j];
-        //return reverse(hex_value.begin(),hex_value.end());
-    }
+        reverse(hex_value.begin(),hex_value.end());
+        return hex_value; 
+         }
 
 
-int verify_opcode(vector<char> opcode)
-    {
+int verify_opcode(string opcode)
+    {  
        fstream file;
        string word;
-       string op(opcode.begin(),opcode.end());
        file.open("opcode.txt");
        while(file>>word)
-        {  
-            if(word.compare(op)==0)
-               return 1;
-
-        }
+        {  if(word.compare(opcode)==0)
+              {return 1;}}               
+       if((opcode.compare("START")==0) || (opcode.compare("END")==0))
+       			return 2;
+        if(opcode.compare("WORD")==0)
+				return 3;
        return -1;
     }
-        
-int verify_SYMTAB(vector<char> LABEL,map<int, int> SYMTAB)
-    {
-        if(SYMTAB.find(LABEL)!=SYMTAB.end())
-            return 1;
-        else
-        {
-        }
-        
-    }
+    
+int update(int mneumonic,int &LOCCTR)
+	{
+		if(mneumonic == 1)
+			LOCCTR += 3;
+		if (mneumonic ==3)
+			LOCCTR +=3;}
+
 int main()
-{   map<vector<char>, int> SYMTAB; 
+{   map<string,vector<char> > SYMTAB; 
     int LOCCTR=0000;
 	FILE *fptr;
-    vector<char> opcode,LABEL;
+	ofstream fout,fim;
+	fim.open("intermediate.txt");
+	int mneumonic;
+    string opcode,LABEL,operand;
 	fptr = fopen("input.txt", "r"); 
+	
 	char line[50];
-	/*char c = fgetc(fptr); 
-    	while (c != EOF) 
-    	{ 
-        	printf ("%c", c); 
-       		c = fgetc(fptr); 
-    	}*/
-	fgets(line,50,fptr);
 	 while(fgets(line,50,fptr)!= NULL) 
-	{    int j = 0 , i=0;
+	  {    int j = 0 , i=0;
         opcode.clear();
         LABEL.clear();
-	
-        while(line[i]!=' ' && line[i]!='\n')
+        operand.clear();
+	    while(line[i]!='-' && line[i]!=' ')
+           { LABEL.push_back(line[i++]);
+           }
+        while(line[++i] == ' ');
+		while(line[i]!=' ')
            { opcode.push_back(line[i++]);
            }
-        if(verify_opcode(opcode))
-            {while(line[i]!='\n')
-                LABEL.push_back(line[++i]);
-                //verify_SYMTAB(LABEL,SYMTAB);
-                }
-        for(int i=0;i<opcode.size();i++)
-            cout<<opcode[i];
-        
-        //cout<<LABEL; 		
+        while(line[++i] == ' ');
+        while(line[i]!='\n')
+           { operand.push_back(line[i++]);
+           }
+       mneumonic = verify_opcode(opcode);
+       vector<char> hexLOCCTR = int_to_hex(LOCCTR);
+      
+       if(mneumonic!=-1)
+       		update(mneumonic,LOCCTR);
+       if(LABEL.size() != 0)
+       		SYMTAB.insert({LABEL,hexLOCCTR});
+   	   if(LABEL.size()==0)
+   	   fim<<LOCCTR<<" "<<"-"<<" "<<opcode<<" "<<operand;
+   	   else
+   	   fim<<LOCCTR<<" "<<LABEL<<" "<<opcode<<" "<<operand;
+   	   fim<<endl;
+        }
+       fout.open("symtab.txt"); 
+	 
+       for(map<string, vector<char> >::iterator i=SYMTAB.begin(); i!=SYMTAB.end(); i++)
+       {
+        fout<<i->first<<" ";
+        for(int j=0;j<i->second.size();j++)
+        { fout<<i->second[j];}
+        fout<<endl;
         }  
     	fclose(fptr);
+    	fout.close();
         return 0;
+
 } 
